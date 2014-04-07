@@ -9,9 +9,14 @@ module Fluent
 		Fluent::Plugin.register_output('expand', self)
 
 		config_param :key,	:string
+		config_param :reemit_doc, :bool, :default => false
 
 		def configure(conf)
 			super
+
+			if conf.has_key?('reemit_doc')
+				@reemit_doc = true
+			end
 
 			if (
 				!add_tag_prefix &&
@@ -27,9 +32,15 @@ module Fluent
 				expanded = expand(record)
 
 				expanded.each do |item|
-					tag_rewritted = tag.clone
-					filter_record(tag_rewritted, time, item)
-					Engine.emit(tag_rewritted, time, item)
+
+					if item.has_key?(key)
+						tag_rewritted = tag.clone
+						filter_record(tag_rewritted, time, item)
+						Engine.emit(tag_rewritted, time, item)
+					elsif @reemit_doc
+						Engine.emit(tag, time, item)
+					end
+
 				end
 
 			end
@@ -55,6 +66,11 @@ module Fluent
 						modified[key] = item
 						expanded << modified
 					end
+
+					# add one without the key
+					modified = record.clone
+					modified.delete(key)
+					expanded << modified
 
 					expanded
 

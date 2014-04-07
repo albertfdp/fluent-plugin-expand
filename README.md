@@ -39,6 +39,31 @@ Then you will get them re-emmited tag/records below:
 
 The `key` is used to point a key whose value contains JSON-formatted array.
 
+### reemit_doc
+
+This param is set by default to `false` and it will reemit the original log, with the original tag without the key. For instance, for an input:
+
+	"test" => {
+		"meta"=> "data",
+		"foo" => [{"bar" => ["hello", "world"]}, {"qux" => ["hoe", "poe"]}]
+	}
+
+It will emit:
+
+	"expanded" => {
+		"meta" => "data",
+		"bar" => ["hello", "world"]
+	}
+
+	"expanded" => {
+		"meta" => "data",
+		"qux" => ["hoe", "poe"]
+	}
+
+	"test" => {
+		"meta"=> "data"
+	}
+
 ### remove_tag_prefix, remove_tag_suffix, add_tag_prefix, add_tag_suffix
 
 These params are included from `Fluent::HandleTagNameMixin`. See that code for details.
