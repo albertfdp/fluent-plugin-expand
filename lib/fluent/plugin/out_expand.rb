@@ -53,30 +53,26 @@ module Fluent
 			expanded = []
 
 			if record.has_key?(key) && !record[key].empty?
-				array = nil # array of records for a particular user
-				array = record[key]
+				hash = nil
+				hash = record[key]
+
+				puts record[key]
 
 				processor = lambda do |root, array|
-
 					expanded = []
-					return expanded unless array.is_a?(Array) # filter the key
+					return expanded unless hash.is_a?(Hash)
 
-					array.each do |item|
+					hash.each do |hkey, values|
 						modified = record.clone
-						modified[key] = item
+						modified[key] = {hkey => values}
 						expanded << modified
 					end
-
-					# add one without the key
-					modified = record.clone
-					modified.delete(key)
-					expanded << modified
 
 					expanded
 
 				end
 
-				expanded = processor.call(key, array)
+				expanded = processor.call(key, hash)
 
 			end
 

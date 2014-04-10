@@ -35,7 +35,7 @@ class ExpandOutputTest < Test::Unit::TestCase
 	def test_expand
 		d = create_driver
 
-		expanded = d.instance.expand({'meta' => 'some', 'results' => [{'a' => ['1', '2']}, {'b' => ['3', '4']}]})
+		expanded = d.instance.expand({'meta' => 'some', 'results' => {'a' => ['1', '2'], 'b' => ['3', '4']}})
 
 		expected = [
 			{'meta'=>'some', 'results'=>{'a'=>['1', '2']}},
@@ -58,7 +58,7 @@ class ExpandOutputTest < Test::Unit::TestCase
 		d = create_driver
 
 		d.run do
-			d.emit({'meta' => 'some', 'results' => [{'a' => ['1', '2']}, {'b' => ['3', '4']}]})
+			d.emit({'meta' => 'some', 'results' => {'a' => ['1', '2'], 'b' => ['3', '4']}})
 		end
 
 		emits = d.emits
